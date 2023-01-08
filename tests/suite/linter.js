@@ -972,6 +972,24 @@ exports.linter8 = async () => {
   }, `Error not as expected`);
 };
 
+exports.linter_Parms_Not_Required_For_CtlOpt = async () => {
+  const lines = [
+    `**FREE`,
+    `ctl-opt main(main) ;`,
+    `dcl-proc main ;`,
+    `  return ;`,
+    `end-proc main;`,
+  ].join(`\n`);
+
+  const parser = parserSetup();
+  const cache = await parser.getDocs(uri, lines);
+  const { errors } = Linter.getErrors({ uri, content: lines }, {
+    RequiresParameter: true
+  }, cache);
+
+  assert.strictEqual(errors.length, 0, `An unexpected RequiresParamter error was returned`);
+};
+
 /**
    * Check that local variables are not in global scope
    */
@@ -3106,7 +3124,7 @@ exports.issue_170a = async () => {
   assert.strictEqual(Object.keys(Move1.keyword).length, 2);
   assert.strictEqual(Move1.position.line, 3);
   assert.strictEqual(Move1.references.length, 0);
-  
+
   assert.deepStrictEqual(errors.length, 2);
 }
 
@@ -3215,7 +3233,7 @@ exports.issue180 = async () => {
     ``,
     `Endsr;`,
   ].join(`\n`);
-  
+
   const parser = await parserSetup();
   const cache = await parser.getDocs(uri, lines);
 

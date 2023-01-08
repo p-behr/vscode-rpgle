@@ -54,7 +54,7 @@ export default class Linter {
 
   /**
    * @param {{uri: string, content: string, availableIncludes?: string[]}} data
-   * @param {Rules} rules 
+   * @param {Rules} rules
    * @param {Cache|null} [globalScope]
    */
   static getErrors(data, rules, globalScope) {
@@ -1008,7 +1008,10 @@ export default class Linter {
                           const definedProcedure = globalProcs.find(proc => proc.name.toUpperCase() === upperName);
                           if (definedProcedure) {
                             let requiresBlock = false;
-                            if (statement.length <= i + 1) {
+                            // Do not require parameters for procedures found in Ctl-Opt
+                            if (statement[0].value.toUpperCase() === `CTL-OPT`) {
+                              // do nothing
+                            } else if (statement.length <= i + 1) {
                               requiresBlock = true;
                             } else if (statement[i + 1].type !== `openbracket`) {
                               requiresBlock = true;
@@ -1148,7 +1151,7 @@ export default class Linter {
 
         // Next, check for indentation errors
 
-        // Check to see if we are ending a multi-line conditional 
+        // Check to see if we are ending a multi-line conditional
         // and now need to increase the expected indent level
         if (!continuedStatement && deferredIndent) {
           expectedIndent += indent;
